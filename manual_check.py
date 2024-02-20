@@ -17,7 +17,7 @@ lines = ["r hsl",
 # "inlet route moses msg zexy/multiplex~ outlet~" and "floatatom floatatom pack send msg cnv"
 
 m = pymitlm.PyMitlm("testcorpus_subset", 10, "ModKN", True)
-line = lines[4]
+line = lines[1]
 line = "<s> " * padding + line
 print("Line: ", line)
 sentence_tokens = line.split(" ")
