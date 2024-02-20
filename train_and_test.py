@@ -63,7 +63,7 @@ def evaluate_modified_mitlm_model(model):
 
       return accuracy, precision, recall, f1
 
-orders = [2, 3, 4, 6, 8, 10]
+orders = [2, 3, 4, 6, 8, 10, 15]
 accuracies = []
 precisions = []
 recalls = []
