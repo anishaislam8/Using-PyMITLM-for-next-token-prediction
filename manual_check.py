@@ -16,8 +16,8 @@ lines = ["r hsl",
 # model fails to predict ranking for 
 # "inlet route moses msg zexy/multiplex~ outlet~" and "floatatom floatatom pack send msg cnv"
 
-m = pymitlm.PyMitlm("testcorpus_subset", 10, "ModKN", True)
-line = lines[1]
+m = pymitlm.PyMitlm("testcorpus_subset", 4, "ModKN", True)
+line = lines[3]
 line = "<s> " * padding + line
 print("Line: ", line)
 sentence_tokens = line.split(" ")
