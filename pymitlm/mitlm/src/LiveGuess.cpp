@@ -53,6 +53,7 @@
 #include "Smoothing.h"
 #include "CrossFolder.h"
 #include <cstdlib>
+#include <stdio.h>
 #include "util/Logger.h"
 
 using std::string;
@@ -143,6 +144,13 @@ forwardish(std::vector<const char *> & words, // the current words can be empty
     }
   }
 
+  // print vwords
+  Logger::Log(0,"Printing vwords in forwardish...\n");
+  for (int i = 0; i < _order; i++) {
+   if ( i >= 0) {
+     Logger::Log(0,"VWord: %d %d\n",i,vwords[i]);
+   }
+  }
 
   vector<VocabProb> heap(0);
 
@@ -152,12 +160,18 @@ forwardish(std::vector<const char *> & words, // the current words can be empty
   const CountVector & counts = _lm.counts( _order );
   
   int count = 0;
-  //Logger::Log(0, "Find probabilities %d\n",vocab.size());
+  Logger::Log(0, "Find probabilities, size of vocab %d\n",vocab.size());
 
   for (int j = 0; j < vocab.size(); j++) {
+    
     VocabIndex vWordI = j;//vocab[j];
     vwords[ _order - 1 ] = j;
     NgramIndex newIndex = _lm.model()._Find( vwords, _order );
+
+    /** 
+     * Anisha comment: For the failing cases, this loop prints -1 for newIndex for all the words in the vocab
+     * It never reaches the heap section, that's why heap size is 0
+    **/
     
     if (newIndex == -1) { // not legit :(
       continue;
@@ -193,8 +207,9 @@ forwardish(std::vector<const char *> & words, // the current words can be empty
       // should we update?
     }
   }
+  Logger::Log(0, "Heap size before sorting %d\n",heap.size());
   sortHeap( heap );
-
+  Logger::Log(0, "Heap size %d\n",heap.size());
   std::vector<LiveGuessResult> * resVector = new std::vector<LiveGuessResult>();
   
   for( int j = 0; j < heap.size(); j++) {
@@ -248,6 +263,7 @@ void sortLiveGuesses( std::vector<LiveGuessResult> & v ) {
 
 std::auto_ptr< std::vector<LiveGuessResult> > LiveGuess::Predict(
   const char * str, int predictions) {
+  Logger::Log(0, "Inside Live Guess Predict....\n");
   vector<const char *> words(0);
   int len = strlen(str) + 1;
   char strSpace[len];
@@ -262,8 +278,23 @@ std::auto_ptr< std::vector<LiveGuessResult> > LiveGuess::Predict(
     if (*p != 0) *p++ = 0;
     words.push_back( token );
   }
+  Logger::Log(0, "After predict while loop...\n");
+  Logger::Log(0, "Trying to print words...\n");
+  for (int i = 0; i < words.size(); i++) {
+   if ( i >= 0) {
+     Logger::Log(0,"Word: %d %s\n",i,words[i]);
+   }
+  }
+  
   const Vocab & vocab = _lm.vocab();
   vector<const char *> ourWords(words); // clone it
+  Logger::Log(0, "Trying to print cloned words...\n");
+  for (int i = 0; i < ourWords.size(); i++) {
+   if ( i >= 0) {
+     Logger::Log(0,"Cloned Word: %d %s\n",i,ourWords[i]);
+   }
+  }
+
   std::auto_ptr< std::vector<LiveGuessResult> > returnValues = forwardish(
                                                                           ourWords,
                                                                           0.0,

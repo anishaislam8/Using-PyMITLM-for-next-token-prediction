@@ -11,6 +11,7 @@ public:
     _smoothing = smoothing;
     _unk = unk;
     Logger::Log(1, "[LL] Loading eval set %s...\n", corpus.c_str()); // [i].c_str());
+    Logger::Log(1, "This is printing...\n");
     Logger::Log(1, "[LL] Smoothing %s...\n", smoothing.c_str()); // [i].c_str());
     _lm = NgramLM(order);
     _lm.Initialize(NULL, unk, 
@@ -54,7 +55,7 @@ public:
   }
   string predict(string data) {
       Logger::Log(2, "Live Guess Input: %s\n", data.c_str());
-
+      Logger::Log(1, "Inside pymitlm.h predict...\n");
       /* Fun fact! The prediction arugment is ignored, so I'm passing an arbitrary
       * magic constant! */
       std::auto_ptr<std::vector<LiveGuessResult> > results =

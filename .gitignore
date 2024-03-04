@@ -2,3 +2,4 @@ test_subset_xentropy.py
 pymitlm.egg-info/
 build/
 test_output.txt
+.vscode

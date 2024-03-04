@@ -78,6 +78,8 @@ NgramVector::NgramVector(const NgramVector &v) {
 
 // Return associated index of the value, or -1 if not found.
 // In case of collision, apply quadratic probing.
+
+// Anisha comment: This is the problem, it's returning -1
 NgramIndex
 NgramVector::Find(NgramIndex hist, VocabIndex word) const {
     size_t     skip = 0;

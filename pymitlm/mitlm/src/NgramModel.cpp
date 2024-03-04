@@ -809,8 +809,17 @@ NgramModel::Deserialize(FILE *inFile) {
 NgramIndex
 NgramModel::_Find(const VocabIndex *words, size_t wordsLen) const {
     NgramIndex index = 0;
+    // Logger::Log(0, "wordslen %d\n",wordsLen);
+
+    // for (int i = 0; i < wordsLen; i++) {
+    //     if ( i >= 0) {
+    //         Logger::Log(0,"Word inside _Find: %d %d\n",i,words[i]);
+    //     }
+    // }
+
     for (size_t i = 0; i < wordsLen; ++i)
         index = _vectors[i+1].Find(index, words[i]);
+        Logger::Log(0, "Index %d\n",index);
     return index;
 }
 

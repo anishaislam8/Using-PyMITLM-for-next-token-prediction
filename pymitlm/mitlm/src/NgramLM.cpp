@@ -229,8 +229,10 @@ NgramLM::Initialize(const char *vocab, bool useUnknown,
   if (text) {
     vector<string> textFiles;
     trim_split(textFiles, text, ',');
+    Logger::Log(1, "Text file size %d...\n", textFiles.size());
     for (size_t i = 0; i < textFiles.size(); i++) {
       Logger::Log(1, "Loading corpus %s...\n", textFiles[i].c_str());
+      Logger::Log(1, "Am I here?\n");
       ZFile corpusZFile(ZFile(textFiles[i].c_str()));
       LoadCorpus(corpusZFile);
       if (corpusFile.length() == 0) corpusFile = textFiles[i].c_str();

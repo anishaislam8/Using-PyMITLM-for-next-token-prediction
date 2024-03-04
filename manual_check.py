@@ -11,12 +11,16 @@ lines = ["r hsl",
 "floatatom t msg",
 "floatatom floatatom pack send msg cnv",
 "t msg list_prepend l2s list send",
-"tgl tgl vsl cnv cnv catch~"]
+"tgl tgl vsl cnv cnv catch~",
+"<s> <s> <s> floatatom floatatom pack send msg"]
 
+# import pdb; pdb.set_trace()
 # model fails to predict ranking for 
 # "inlet route moses msg zexy/multiplex~ outlet~" and "floatatom floatatom pack send msg cnv"
 
-m = pymitlm.PyMitlm("testcorpus_subset", 4, "ModKN", True)
+m = pymitlm.PyMitlm("testcorpus_subset", 5, "ModKN", True)
+# for item in m.vocab():
+#     print(item)
 line = lines[3]
 line = "<s> " * padding + line
 print("Line: ", line)
