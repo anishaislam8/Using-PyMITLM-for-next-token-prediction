@@ -817,9 +817,13 @@ NgramModel::_Find(const VocabIndex *words, size_t wordsLen) const {
     //     }
     // }
 
+    // the parameters are passing properly
+
+    // the Find function is the problem
     for (size_t i = 0; i < wordsLen; ++i)
         index = _vectors[i+1].Find(index, words[i]);
-        Logger::Log(0, "Index %d\n",index);
+        // Anisha comment: everything is -1
+        // Logger::Log(0, "Index %d\n",index);
     return index;
 }
 
