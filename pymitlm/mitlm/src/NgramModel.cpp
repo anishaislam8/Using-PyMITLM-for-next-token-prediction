@@ -817,7 +817,7 @@ NgramModel::_Find(const VocabIndex *words, size_t wordsLen) const {
     //     }
     // }
 
-    // the parameters are passing properly
+    // Anisha: the parameters are passing properly
 
     // the Find function is the problem
     for (size_t i = 0; i < wordsLen; ++i)
