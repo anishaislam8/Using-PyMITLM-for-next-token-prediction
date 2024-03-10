@@ -135,6 +135,10 @@ forwardish(std::vector<const char *> & words, // the current words can be empty
 
   //vwords[0] to _order -1 are filled in
   // if it's small EndOfSentence starts it..
+  // <s> <s> <s> floatatom floatatom pack send msg
+  // words.size() = 8
+  // words.size() - _order + i = 8 - 4 + 1 = 5
+  // so the first part of 4gram input: pack send msg
   for (int i = 1; i < _order; i++) {
     int j = words.size() - _order + i;
     if (j < 0) {
@@ -145,8 +149,8 @@ forwardish(std::vector<const char *> & words, // the current words can be empty
   }
 
   // print vwords
-  Logger::Log(0,"Printing vwords in forwardish...\n");
-  for (int i = 0; i < _order; i++) {
+  Logger::Log(0,"Printing vwords in forwardish, the last index is not assigned yet...\n");
+  for (int i = 0; i < _order - 1; i++) {
    if ( i >= 0) {
      Logger::Log(0,"VWord: %d %d\n",i,vwords[i]);
    }
@@ -166,16 +170,26 @@ forwardish(std::vector<const char *> & words, // the current words can be empty
     
     VocabIndex vWordI = j;//vocab[j];
     vwords[ _order - 1 ] = j;
+
+    // if (j %1000 == 0){
+    //   for (int k = 0; k < _order; k++) {
+    //     Logger::Log(0,"VWord: %d %d\n",k,vwords[k]);
+    //   }
+    // }
     NgramIndex newIndex = _lm.model()._Find( vwords, _order );
 
-    /** 
-     * Anisha comment: For the failing cases, this loop prints -1 for newIndex for all the words in the vocab
-     * It never reaches the heap section, that's why heap size is 0
-    **/
+
+    /*
+    Anisha Comment: The problem is the model outputs -1 when it can't find the ngram. For example,
+    For a failing scenario, <s> <s> <s> floatatom floatatom pack send msg, there is a 2-gram with floatatom pack,
+    but there is no 3-gram with floatatom pack send. So, the model outputs -1. 
+    There should be a better way of handling these failing scenarios instead of continue.
+    */
     
     if (newIndex == -1) { // not legit :(
       continue;
     }
+
     Prob probRaw = probabilities[ newIndex ];
     if (probRaw == 0.0) {
       continue;

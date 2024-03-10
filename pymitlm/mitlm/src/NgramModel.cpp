@@ -809,21 +809,23 @@ NgramModel::Deserialize(FILE *inFile) {
 NgramIndex
 NgramModel::_Find(const VocabIndex *words, size_t wordsLen) const {
     NgramIndex index = 0;
-    // Logger::Log(0, "wordslen %d\n",wordsLen);
-
-    // for (int i = 0; i < wordsLen; i++) {
-    //     if ( i >= 0) {
-    //         Logger::Log(0,"Word inside _Find: %d %d\n",i,words[i]);
-    //     }
-    // }
-
+    
     // Anisha: the parameters are passing properly
+    // Logger::Log(0, "_vectors length %d\n",_vectors.size()); - output 6 (For 5 gram):/
 
     // the Find function is the problem
-    for (size_t i = 0; i < wordsLen; ++i)
+    for (size_t i = 0; i < wordsLen; ++i){
+        // index = _vectors[i+1].Find(0, 2055);
+        // Anisha - If the first one returns -1 then does it mean that the word is not in the 1-grams?
+        /* Anisha:
+        Cloned Word: 4 floatatom : returns a valid index
+        Cloned Word: 5 pack : returns a valid index (so I am searching for floatatom in 2-grams, is there pack in 2-grams after floatatom?)
+        Cloned Word: 6 send : returns -1, because in 3-grams, there is no send after floatatom pack
+        Cloned Word: 7 msg
+        */
         index = _vectors[i+1].Find(index, words[i]);
-        // Anisha comment: everything is -1
-        // Logger::Log(0, "Index %d\n",index);
+        // Logger::Log(0, "Index for floatatom: %d %d %s\n", index, words[i], _vocab[words[i]]);
+    }
     return index;
 }
 
