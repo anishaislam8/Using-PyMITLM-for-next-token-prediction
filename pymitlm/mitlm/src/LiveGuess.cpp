@@ -147,35 +147,21 @@ forwardish(std::vector<const char *> & words, // the current words can be empty
       vwords[i - 1] = vocab.Find( words[ j ] );
     }
   }
-
-  // print vwords
-  Logger::Log(0,"Printing vwords in forwardish, the last index is not assigned yet...\n");
-  for (int i = 0; i < _order - 1; i++) {
-   if ( i >= 0) {
-     Logger::Log(0,"VWord: %d %d\n",i,vwords[i]);
-   }
-  }
-
   vector<VocabProb> heap(0);
 
   mkHeap(heap);
 
   const ProbVector & probabilities = _lm.probs(  _order ) ;// _order - 2  );
   const CountVector & counts = _lm.counts( _order );
+
   
   int count = 0;
-  Logger::Log(0, "Find probabilities, size of vocab %d\n",vocab.size());
+
 
   for (int j = 0; j < vocab.size(); j++) {
     
     VocabIndex vWordI = j;//vocab[j];
     vwords[ _order - 1 ] = j;
-
-    // if (j %1000 == 0){
-    //   for (int k = 0; k < _order; k++) {
-    //     Logger::Log(0,"VWord: %d %d\n",k,vwords[k]);
-    //   }
-    // }
     NgramIndex newIndex = _lm.model()._Find( vwords, _order );
 
 
@@ -184,12 +170,19 @@ forwardish(std::vector<const char *> & words, // the current words can be empty
     For a failing scenario, <s> <s> <s> floatatom floatatom pack send msg, there is a 2-gram with floatatom pack,
     but there is no 3-gram with floatatom pack send. So, the model outputs -1. 
     There should be a better way of handling these failing scenarios instead of continue.
+
+    I think the continue scenario in line 182 was used keeping in mind that,
+    the model might get stuck with the current last word of the context that was taken from the vocabulary, 
+    so move on to the next one.
+    The scenario that was not handled was when the model outputs -1 and the original context is not found in the n-grams,
+    so no matter what word is added to the context, the model will not be able to find the n-gram.
     */
     
     if (newIndex == -1) { // not legit :(
       continue;
     }
 
+    
     Prob probRaw = probabilities[ newIndex ];
     if (probRaw == 0.0) {
       continue;
@@ -221,9 +214,7 @@ forwardish(std::vector<const char *> & words, // the current words can be empty
       // should we update?
     }
   }
-  Logger::Log(0, "Heap size before sorting %d\n",heap.size());
   sortHeap( heap );
-  Logger::Log(0, "Heap size %d\n",heap.size());
   std::vector<LiveGuessResult> * resVector = new std::vector<LiveGuessResult>();
   
   for( int j = 0; j < heap.size(); j++) {
@@ -292,22 +283,11 @@ std::auto_ptr< std::vector<LiveGuessResult> > LiveGuess::Predict(
     if (*p != 0) *p++ = 0;
     words.push_back( token );
   }
-  Logger::Log(0, "After predict while loop...\n");
-  Logger::Log(0, "Trying to print words...\n");
-  for (int i = 0; i < words.size(); i++) {
-   if ( i >= 0) {
-     Logger::Log(0,"Word: %d %s\n",i,words[i]);
-   }
-  }
+
   
   const Vocab & vocab = _lm.vocab();
   vector<const char *> ourWords(words); // clone it
-  Logger::Log(0, "Trying to print cloned words...\n");
-  for (int i = 0; i < ourWords.size(); i++) {
-   if ( i >= 0) {
-     Logger::Log(0,"Cloned Word: %d %s\n",i,ourWords[i]);
-   }
-  }
+
 
   std::auto_ptr< std::vector<LiveGuessResult> > returnValues = forwardish(
                                                                           ourWords,

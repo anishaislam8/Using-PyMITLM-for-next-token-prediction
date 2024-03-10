@@ -813,10 +813,8 @@ NgramModel::_Find(const VocabIndex *words, size_t wordsLen) const {
     // Anisha: the parameters are passing properly
     // Logger::Log(0, "_vectors length %d\n",_vectors.size()); - output 6 (For 5 gram):/
 
-    // the Find function is the problem
+    // the Find function is not the problem
     for (size_t i = 0; i < wordsLen; ++i){
-        // index = _vectors[i+1].Find(0, 2055);
-        // Anisha - If the first one returns -1 then does it mean that the word is not in the 1-grams?
         /* Anisha:
         Cloned Word: 4 floatatom : returns a valid index
         Cloned Word: 5 pack : returns a valid index (so I am searching for floatatom in 2-grams, is there pack in 2-grams after floatatom?)
